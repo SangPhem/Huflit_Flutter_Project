@@ -59,6 +59,7 @@ class _LoginPagesState extends State<LoginPages> {
                             MaterialPageRoute(
                                 builder: (context) => MainPages()),
                             (route) => false);
+                            print(name);
                       },
                       child: Text("Ok"))
                 ],
@@ -69,7 +70,7 @@ class _LoginPagesState extends State<LoginPages> {
           barrierDismissible: false,
           context: context,
           builder: (context) => AlertDialog(
-                title: Text("Information"),
+                title: Text("Thông Báo"),
                 content: Text(message),
                 actions: [
                   TextButton(
@@ -96,6 +97,11 @@ class _LoginPagesState extends State<LoginPages> {
     });
   }
 
+String? name;
+  getPref() async{
+    SharedPreferences sharedPreferences =  await SharedPreferences.getInstance();
+    name = sharedPreferences.getString(PrefProfile.name);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

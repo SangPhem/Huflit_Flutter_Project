@@ -5,6 +5,8 @@ import 'package:med_app/network/api/url_api.dart';
 import 'package:med_app/network/model/pref_profile_model.dart';
 import 'package:med_app/network/model/product_model.dart';
 import 'package:med_app/pages/cart_pages.dart';
+import 'package:med_app/pages/detail_product.dart';
+import 'package:med_app/pages/search_product.dart';
 // import 'package:med_app/pages/detail_product.dart';
 // import 'package:med_app/pages/search_product.dart';
 import 'package:med_app/theme.dart';
@@ -118,7 +120,7 @@ class _HomePagesState extends State<HomePages> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CartPages(totalCart)));
+                            builder: (context) => CartPages()));
                   },
                   icon: Icon(
                     Icons.shopping_cart_outlined,
@@ -153,8 +155,8 @@ class _HomePagesState extends State<HomePages> {
         ),
         InkWell(
           onTap: () {
-            // Navigator.push(context,
-            //     MaterialPageRoute(builder: (context) => SearchProduct()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SearchProduct()));
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
@@ -226,10 +228,10 @@ class _HomePagesState extends State<HomePages> {
                       final y = listCategory[index!].product![i];
                       return InkWell(
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => DetailProduct(y)));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetailProduct(y)));
                         },
                         child: CardProduct(
                           nameProduct: y.nameProduct,
@@ -255,10 +257,18 @@ class _HomePagesState extends State<HomePages> {
                       //     MaterialPageRoute(
                       //         builder: (context) => DetailProduct(y)));
                     },
-                    child: CardProduct(
-                      nameProduct: y.nameProduct,
-                      imageProduct: y.imageProduct,
-                      price: y.price,
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(
+                            builder:  (context) => DetailProduct(y)));
+                      },
+                      child: CardProduct(
+                        nameProduct: y.nameProduct,
+                        imageProduct: y.imageProduct,
+                        price: y.price,
+                      ),
                     ),
                   );
                 }),

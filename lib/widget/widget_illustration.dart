@@ -7,7 +7,7 @@ class WidgetIllustration extends StatelessWidget {
   final String? title;
   final String? subtitle1;
   final String? subtitle2;
-  WidgetIllustration(
+  WidgetIllustration(//required image, 
       {this.child, this.image, this.title, this.subtitle1, this.subtitle2});
 
   @override

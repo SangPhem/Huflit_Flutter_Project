@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:med_app/pages/register_page.dart';
+import 'package:med_app/main_page.dart';
+import 'package:med_app/pages/login_page.dart';
 import 'package:med_app/widget/button_primary.dart';
 import 'package:med_app/widget/general_logo_space.dart';
 import 'package:med_app/widget/widget_illustration.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../network/model/pref_profile_model.dart';
 // import 'package:med_app/main_page.dart';
 // import 'package:med_app/network/model/pref_profile_model.dart';
 // import 'package:med_app/pages/login_page.dart';
@@ -12,7 +16,35 @@ import 'package:med_app/widget/widget_illustration.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter/cupertino.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+
+String? userID;
+  getPref() async{
+    SharedPreferences sharedPreferences =  await SharedPreferences.getInstance();
+    userID = sharedPreferences.getString(PrefProfile.idUSer);
+    userID == null ? sessionLogout() : sessionLogin();
+  }
+  sessionLogout(){
+
+  }
+
+
+  sessionLogin(){
+    Navigator.pushReplacement(
+      context,MaterialPageRoute(builder: (context) => MainPages())
+      );
+  }
+  @override
+  void initState() {
+    super.initState();
+    getPref();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +64,7 @@ class SplashScreen extends StatelessWidget {
                 onTap: () {
                   //điều hướng
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => RegisterPages()));
+                      MaterialPageRoute(builder: (context) => LoginPages()));
                 },
               ),
             ),

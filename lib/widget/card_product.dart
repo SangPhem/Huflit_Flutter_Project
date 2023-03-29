@@ -34,7 +34,7 @@ class CardProduct extends StatelessWidget {
             height: 14,
           ),
           Text(
-            "Rp " + priceFormat.format(int.parse(price!)),
+            "VND" + priceFormat.format(int.parse(price!)),
             style: boldTextStyle,
           )
         ],
