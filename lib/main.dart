@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_app/pages/splash_screen.dart';
+import 'package:med_app/pages/success_checkout.dart';
 //import 'package:med_app/screens/welcome_screen.dart';
 import 'package:med_app/theme.dart';
 
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primaryColor: greenColor),
-      home: SplashScreen(),
+      home: SuccessCheckout(),
     );
   }
 }

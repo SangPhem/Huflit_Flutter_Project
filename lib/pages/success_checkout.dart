@@ -18,15 +18,15 @@ class SuccessCheckout extends StatelessWidget {
           ),
           WidgetIllustration(
             image: "assets/order_success_ilustration.png",
-            title: "Yeay, your order was successfully",
-            subtitle1: "Consult with a doctor,",
-            subtitle2: "Wherever and whenever you are",
+            title: "Đơn đặt hàng của bạn đã thành công",
+            subtitle1: "Hãy tham khảo ý kiến sĩ,",
+            subtitle2: "Bất kì ở đâu và nơi đâu",
           ),
           SizedBox(
             height: 30,
           ),
           ButtonPrimary(
-            text: "BACK TO HOME",
+            text: "QUAY VỀ TRANG CHỦ",
             onTap: () {
               Navigator.pushAndRemoveUntil(
                   context,

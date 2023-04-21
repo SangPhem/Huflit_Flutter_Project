@@ -120,7 +120,7 @@ class _HomePagesState extends State<HomePages> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CartPages()));
+                            builder: (context) => CartPages(totalCart)));
                   },
                   icon: Icon(
                     Icons.shopping_cart_outlined,
@@ -258,11 +258,11 @@ class _HomePagesState extends State<HomePages> {
                       //         builder: (context) => DetailProduct(y)));
                     },
                     child: InkWell(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(
-                          context, 
-                          MaterialPageRoute(
-                            builder:  (context) => DetailProduct(y)));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailProduct(y)));
                       },
                       child: CardProduct(
                         nameProduct: y.nameProduct,
