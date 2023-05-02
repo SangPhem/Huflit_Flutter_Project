@@ -19,7 +19,7 @@ class SuccessCheckout extends StatelessWidget {
           WidgetIllustration(
             image: "assets/order_success_ilustration.png",
             title: "Đơn đặt hàng của bạn đã thành công",
-            subtitle1: "Hãy tham khảo ý kiến sĩ,",
+            subtitle1: "Hãy tham khảo ý kiến bác sĩ,",
             subtitle2: "Bất kì ở đâu và nơi đâu",
           ),
           SizedBox(

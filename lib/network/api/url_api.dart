@@ -15,7 +15,7 @@ class BASEURL {
       "http://$ipAddress/med_app_db/get_total_price.php?userID=";
   static String getTotalCart =
       "http://$ipAddress/med_app_db/total_cart.php?userID=";
-  static String checkout = "http://$ipAddress/medhealth_db/checkout.php";
+  static String checkout = "http://$ipAddress/med_app_db/checkout.php";
   static String historyOrder =
       "http://$ipAddress/med_app_db/get_history.php?id_user=";
 }

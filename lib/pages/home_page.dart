@@ -65,15 +65,15 @@ class _HomePagesState extends State<HomePages> {
     });
   }
 
-  var jumlahCart = "0";
+  var QuantityCart = "0";
   totalCart() async {
     var urlGetTotalCart = Uri.parse(BASEURL.getTotalCart + userID!);
     final response = await http.get(urlGetTotalCart);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)[0];
-      String jumlah = data['Jumlah'];
+      String Quantity = data['Quantity'];
       setState(() {
-        jumlahCart = jumlah;
+        QuantityCart = Quantity;
       });
     }
   }
@@ -127,7 +127,7 @@ class _HomePagesState extends State<HomePages> {
                     color: greenColor,
                   ),
                 ),
-                jumlahCart == "0"
+                QuantityCart == "0"
                     ? SizedBox()
                     : Positioned(
                         right: 10,
@@ -140,7 +140,7 @@ class _HomePagesState extends State<HomePages> {
                               borderRadius: BorderRadius.circular(30)),
                           child: Center(
                               child: Text(
-                            jumlahCart,
+                            QuantityCart,
                             style: regulerTextStyle.copyWith(
                                 color: whiteColor, fontSize: 12),
                           )),

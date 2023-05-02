@@ -60,10 +60,10 @@ class _CartPagesState extends State<CartPages> {
     return getCart();
   }
 
-  updateQuantity(String tipe, CartModel model) async {
+  updateQuantity(String type, CartModel model) async {
     var urlUpdateQuantity = Uri.parse(BASEURL.updateQuantityProductCart);
     final respone = await http
-        .post(urlUpdateQuantity, body: {"cartID": model, "tipe": tipe});
+        .post(urlUpdateQuantity, body: {"cartID": model, "type": type});
     final data = jsonDecode(respone.body);
     int value = data['value'];
     String message = data['message'];
@@ -341,14 +341,14 @@ class _CartPagesState extends State<CartPages> {
                                           icon: Icon(Icons.add_circle,
                                               color: greenColor),
                                           onPressed: () {
-                                            updateQuantity("tambah", x);
+                                            updateQuantity("add", x);
                                           }),
                                       Text(x.quantity as String),
                                       IconButton(
                                           icon: Icon(Icons.remove_circle,
                                               color: Color(0xfff0997a)),
                                           onPressed: () {
-                                            updateQuantity("kurang", x);
+                                            updateQuantity("reduce", x);
                                           }),
                                     ],
                                   ),
