@@ -34,8 +34,8 @@ class CardHistory extends StatelessWidget {
         ),
         Text(
           model!.status == "1"
-              ? "Pesanan sedang dikonfirmasi"
-              : "Pesanan selesai",
+              ? "Đơn hàng đang được xác nhận"
+              : "Đặt hàng thành công",
           style: lightTextStyle,
         ),
         Divider()

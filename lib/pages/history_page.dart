@@ -55,7 +55,7 @@ class _HistoryPagesState extends State<HistoryPages> {
               padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
               height: 70,
               child: Text(
-                "History Order",
+                "Lịch sử đặt hàng",
                 style: regulerTextStyle.copyWith(fontSize: 25),
               )),
           SizedBox(
@@ -67,9 +67,9 @@ class _HistoryPagesState extends State<HistoryPages> {
                     padding: EdgeInsets.symmetric(horizontal: 24),
                     child: WidgetIllustration(
                       image: "assets/no_history_ilustration.png",
-                      subtitle1: "You dont have history order",
-                      subtitle2: "lets shopping now",
-                      title: "Oops, there are no history order",
+                      subtitle1: "Bạn không có lịch sử đặt hàng",
+                      subtitle2: "Hãy mua thuốc ngay",
+                      title: "Rất tiếc, không có lịch sử đặt hàng",
                     ),
                   ),
                 )
