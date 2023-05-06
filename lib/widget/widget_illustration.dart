@@ -7,8 +7,15 @@ class WidgetIllustration extends StatelessWidget {
   final String? title;
   final String? subtitle1;
   final String? subtitle2;
-  WidgetIllustration(//required image, 
-      {this.child, this.image, this.title, this.subtitle1, this.subtitle2});
+  WidgetIllustration(
+      //required image,
+      {
+    this.child,
+    this.image,
+    this.title,
+    this.subtitle1,
+    this.subtitle2,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +23,7 @@ class WidgetIllustration extends StatelessWidget {
       children: [
         Image.asset(
           image!,
-          width: 250,
+          width: 175,
         ),
         SizedBox(
           height: 30,

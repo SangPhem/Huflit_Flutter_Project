@@ -1,5 +1,5 @@
 class BASEURL {
-  static String ipAddress = "192.168.1.82";
+  static String ipAddress = "172.16.32.129";
   static String apiRegister = "http://$ipAddress/med_app_db/register_api.php";
   static String apiLogin = "http://$ipAddress/med_app_db/login_api.php";
 

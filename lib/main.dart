@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primaryColor: greenColor),
-      home: SuccessCheckout(),
+      home: SplashScreen(),
     );
   }
 }

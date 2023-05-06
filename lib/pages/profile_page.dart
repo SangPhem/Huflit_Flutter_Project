@@ -65,7 +65,7 @@ class _ProfilePagesState extends State<ProfilePages> {
                   },
                   child: Icon(
                     Icons.exit_to_app,
-                    color: greenColor,
+                    color: Colors.cyan,
                   ),
                 )
               ],

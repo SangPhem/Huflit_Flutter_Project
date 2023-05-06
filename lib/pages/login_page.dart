@@ -59,7 +59,7 @@ class _LoginPagesState extends State<LoginPages> {
                             MaterialPageRoute(
                                 builder: (context) => MainPages()),
                             (route) => false);
-                            print(name);
+                        print(name);
                       },
                       child: Text("Ok"))
                 ],
@@ -97,11 +97,12 @@ class _LoginPagesState extends State<LoginPages> {
     });
   }
 
-String? name;
-  getPref() async{
-    SharedPreferences sharedPreferences =  await SharedPreferences.getInstance();
+  String? name;
+  getPref() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     name = sharedPreferences.getString(PrefProfile.name);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -249,7 +250,7 @@ String? name;
                       child: Text(
                         "Đăng ký ngay",
                         style: boldTextStyle.copyWith(
-                            color: greenColor, fontSize: 15),
+                            color: Colors.cyan, fontSize: 15),
                       ),
                     )
                   ],

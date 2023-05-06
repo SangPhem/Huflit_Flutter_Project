@@ -300,7 +300,7 @@ class _RegisterPagesState extends State<RegisterPages> {
                       child: Text(
                         "Đăng nhập ngay",
                         style: boldTextStyle.copyWith(
-                            color: greenColor, fontSize: 15),
+                            color: Colors.cyan, fontSize: 15),
                       ),
                     ),
                   ],

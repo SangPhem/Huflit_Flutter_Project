@@ -210,7 +210,7 @@ class _CartPagesState extends State<CartPages> {
                   child: Icon(
                     Icons.arrow_back_rounded,
                     size: 32,
-                    color: greenColor,
+                    color: Colors.cyan,
                   ),
                 ),
                 SizedBox(
@@ -322,11 +322,11 @@ class _CartPagesState extends State<CartPages> {
                           children: [
                             Image.network(
                               x.image as String,
-                              width: 170,
-                              height: 120,
+                              width: 85,
+                              height: 60,
                             ),
                             Container(
-                              width: 300,
+                              width: 200,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -339,7 +339,7 @@ class _CartPagesState extends State<CartPages> {
                                     children: [
                                       IconButton(
                                           icon: Icon(Icons.add_circle,
-                                              color: greenColor),
+                                              color: Colors.cyan),
                                           onPressed: () {
                                             updateQuantity("add", x);
                                           }),

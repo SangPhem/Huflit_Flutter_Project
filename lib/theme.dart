@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // theme color
-Color greenColor = Color(0xff4fc65b);
+Color greenColor = Colors.cyan;
 Color whiteColor = Color(0xffffffff);
 Color blackColor = Color(0xff000000);
 Color greyBoldColor = Color(0xff696060);

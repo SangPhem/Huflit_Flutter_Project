@@ -14,7 +14,7 @@ class SuccessCheckout extends StatelessWidget {
         padding: EdgeInsets.all(24),
         children: [
           SizedBox(
-            height: 80,
+            height: 30,
           ),
           WidgetIllustration(
             image: "assets/order_success_ilustration.png",
@@ -23,7 +23,7 @@ class SuccessCheckout extends StatelessWidget {
             subtitle2: "Bất kì ở đâu và nơi đâu",
           ),
           SizedBox(
-            height: 30,
+            height: 15,
           ),
           ButtonPrimary(
             text: "QUAY VỀ TRANG CHỦ",

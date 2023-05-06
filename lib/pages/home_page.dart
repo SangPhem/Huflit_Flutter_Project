@@ -7,13 +7,12 @@ import 'package:med_app/network/model/product_model.dart';
 import 'package:med_app/pages/cart_pages.dart';
 import 'package:med_app/pages/detail_product.dart';
 import 'package:med_app/pages/search_product.dart';
-// import 'package:med_app/pages/detail_product.dart';
-// import 'package:med_app/pages/search_product.dart';
 import 'package:med_app/theme.dart';
 import 'package:med_app/widget/card_category.dart';
 import 'package:med_app/widget/card_product.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:med_app/pages/detail_doctor.dart';
 
 class HomePages extends StatefulWidget {
   @override
@@ -124,7 +123,7 @@ class _HomePagesState extends State<HomePages> {
                   },
                   icon: Icon(
                     Icons.shopping_cart_outlined,
-                    color: greenColor,
+                    color: Colors.cyan,
                   ),
                 ),
                 QuantityCart == "0"
@@ -163,19 +162,74 @@ class _HomePagesState extends State<HomePages> {
             height: 55,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Color(0xffe4faf0)),
+                color: Color.fromARGB(255, 228, 255, 255)),
             child: TextField(
               enabled: false,
               decoration: InputDecoration(
                   border: InputBorder.none,
                   prefixIcon: Icon(
                     Icons.search,
-                    color: Color(0xffb1d8b2),
+                    color: Colors.cyan,
                   ),
                   hintText: "Tìm kiếm ...",
-                  hintStyle:
-                      regulerTextStyle.copyWith(color: Color(0xffb0d8b2))),
+                  hintStyle: regulerTextStyle.copyWith(color: Colors.cyan)),
             ),
+          ),
+        ),
+        SizedBox(
+          height: 32,
+        ),
+        Text(
+          "Các bác sĩ tư vấn",
+          style: regulerTextStyle.copyWith(fontSize: 16),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              for (var i = 1; i <= 5; i++)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DetailDoctor()),
+                    );
+                  },
+                  child: Container(
+                    width: 100,
+                    height: 150,
+                    margin: EdgeInsets.all(10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: i % 2 == 0 ? Colors.green : Colors.red,
+                            image: DecorationImage(
+                              image: AssetImage('assets/Johnny Sins.jpg'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'BS.Tiến',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
         SizedBox(
@@ -214,7 +268,7 @@ class _HomePagesState extends State<HomePages> {
           height: 32,
         ),
         filter
-            ? index == 7
+            ? index == 8
                 ? Text("Feature on proggress")
                 : GridView.builder(
                     physics: ClampingScrollPhysics(),

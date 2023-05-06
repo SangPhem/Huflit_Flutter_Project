@@ -23,29 +23,27 @@ class DetailProduct extends StatefulWidget {
 }
 
 class _DetailProductState extends State<DetailProduct> {
-  final priceFormat = NumberFormat("#,##0","EN-US");
-
+  final priceFormat = NumberFormat("#,##0", "EN-US");
 
   String? userID;
-  getPref() async{
+  getPref() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
       userID = sharedPreferences.getString(PrefProfile.idUSer);
     });
   }
 
-
-  addToCart() async{
+  addToCart() async {
     var urlAddToCart = Uri.parse(BASEURL.addToCart);
-    final response = await http.post(urlAddToCart,body: {
-      "id_user" : userID,
-      "id_product" : widget.productModel.idProduct,
+    final response = await http.post(urlAddToCart, body: {
+      "id_user": userID,
+      "id_product": widget.productModel.idProduct,
     });
     final data = jsonDecode(response.body);
     int value = data['value'];
     String message = data['message'];
 
-    if(value ==1){
+    if (value == 1) {
       print(message);
       showDialog(
           barrierDismissible: false,
@@ -56,16 +54,17 @@ class _DetailProductState extends State<DetailProduct> {
                 actions: [
                   TextButton(
                       onPressed: () {
-                        Navigator.pushAndRemoveUntil(context, 
-                        MaterialPageRoute(builder: (context) => MainPages()), 
-                        (route) => false);
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MainPages()),
+                            (route) => false);
                       },
                       child: Text("Ok"))
                 ],
               ));
       setState(() {});
-    }
-    else{
+    } else {
       print(message);
       showDialog(
           barrierDismissible: false,
@@ -85,7 +84,7 @@ class _DetailProductState extends State<DetailProduct> {
     }
   }
 
- @override
+  @override
   void initState() {
     super.initState();
     getPref();
@@ -94,78 +93,89 @@ class _DetailProductState extends State<DetailProduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    body: SafeArea(
-      child: ListView(
-        children: [
-                  Container( padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                  height: 70,child: Row(
-                  children: [
+      body: SafeArea(
+        child: ListView(
+          children: [
+            Container(
+                padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                height: 70,
+                child: Row(children: [
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                     },
                     child: Icon(
-                      Icons.arrow_back_rounded,size: 32,color: greenColor,
+                      Icons.arrow_back_rounded,
+                      size: 32,
+                      color: Colors.cyan,
                     ),
                   ),
-                  SizedBox(width: 30,
+                  SizedBox(
+                    width: 30,
                   ),
                   Text(
-                  "Chi tiết sản phẩm",
-                  style: regulerTextStyle.copyWith(fontSize: 25),)
-                  ])),
+                    "Chi tiết sản phẩm",
+                    style: regulerTextStyle.copyWith(fontSize: 25),
+                  )
+                ])),
+            SizedBox(
+              height: 24,
+            ),
+            Container(
+              height: 200,
+              color: whiteColor,
+              child: Image.network(widget.productModel.imageProduct!),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.productModel.nameProduct!,
+                    style: regulerTextStyle.copyWith(fontSize: 20),
+                  ),
                   SizedBox(
-                    height: 24 ,
+                    height: 16,
+                  ),
+                  Text(
+                    widget.productModel.description!,
+                    style: regulerTextStyle.copyWith(
+                        fontSize: 16, color: greyBoldColor),
+                    textAlign: TextAlign.justify,
+                  ),
+                  SizedBox(
+                    height: 64,
+                  ),
+                  Row(
+                    children: [
+                      Spacer(),
+                      Text(
+                        "VND" +
+                            priceFormat
+                                .format(int.parse(widget.productModel.price!)),
+                        style: boldTextStyle.copyWith(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: ButtonPrimary(
+                      onTap: () {
+                        addToCart();
+                      },
+                      text: "Thêm vào giỏ hàng",
                     ),
-                    Container(
-                      height: 200,
-                      color: whiteColor,
-                      child: Image.network(widget.productModel.imageProduct!),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                            widget.productModel.nameProduct!,
-                            style: regulerTextStyle.copyWith(fontSize: 20),
-                            ),
-                            SizedBox(
-                            height: 16,
-                            ),
-                             Text(
-                            widget.productModel.description!,
-                            style: regulerTextStyle.copyWith(fontSize: 16,
-                            color: greyBoldColor),
-                            textAlign: TextAlign.justify,
-                            ),
-                            SizedBox(
-                              height: 64,
-                            ),
-                            Row(
-                              children: [
-                                Spacer(),
-                                Text("VND" + priceFormat.format(int.parse(widget.productModel.price!)),
-                                style: boldTextStyle.copyWith(fontSize: 20),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 24,),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: ButtonPrimary(
-                                onTap: (){
-                                  addToCart();
-                                },
-                                text: "Thêm vào giỏ hàng",),
-                            ) 
-                          ],
-                        ),
-                      ),
-                   ],
-                ),
-               ),
-            );
-         }
-      }
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
