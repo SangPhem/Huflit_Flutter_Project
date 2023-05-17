@@ -11,18 +11,18 @@ class HistoryOrdelModel {
     this.orderAt,
     this.status,
     this.detail,
-  });
+  }); 
 
-  factory HistoryOrdelModel.fromJson(Map<String, dynamic> dataOrder) {
+  factory HistoryOrdelModel.fromJson(Map<dynamic, dynamic> dataOrder) {
     var list = dataOrder['detail'] as List;
     List<HistoryOrderDetailModel> dataListDetail =
         list.map((e) => HistoryOrderDetailModel.fromJson(e)).toList();
     return HistoryOrdelModel(
       invoice: dataOrder['invoice'],
-      idUser: dataOrder['id_user'],
+      idUser:  dataOrder['id_user'],
       orderAt: dataOrder['order_at'],
-      status: dataOrder['status'],
-      detail: dataListDetail,
+      status:  dataOrder['status'],
+      detail:  dataListDetail,
     );
   }
 }
@@ -33,7 +33,7 @@ class HistoryOrderDetailModel {
   final String? idProduct;
   final String? nameProduct;
   final String? quantity;
-  final String? price;
+  final String? price; 
 
   HistoryOrderDetailModel({
     this.idOrders,
@@ -46,12 +46,12 @@ class HistoryOrderDetailModel {
 
   factory HistoryOrderDetailModel.fromJson(Map<String, dynamic> data) {
     return HistoryOrderDetailModel(
-      idOrders: data['id_orders'],
-      invoice: data['invoice'],
-      idProduct: data['id_product'],
+      idOrders:    data['id_orders'],
+      invoice:     data['invoice'],
+      idProduct:   data['id_product'],
       nameProduct: data['nameProduct'],
-      quantity: data['quantity'],
-      price: data['price'],
+      quantity:    data['quantity'],
+      price:       data['price'],
     );
   }
 }

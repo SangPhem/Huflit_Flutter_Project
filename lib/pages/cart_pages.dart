@@ -341,14 +341,14 @@ class _CartPagesState extends State<CartPages> {
                                           icon: Icon(Icons.add_circle,
                                               color: Colors.cyan),
                                           onPressed: () {
-                                            updateQuantity("add", x);
+                                            updateQuantity("add", x.idCart as CartModel);
                                           }),
                                       Text(x.quantity as String),
                                       IconButton(
                                           icon: Icon(Icons.remove_circle,
                                               color: Color(0xfff0997a)),
                                           onPressed: () {
-                                            updateQuantity("reduce", x);
+                                            updateQuantity("reduce", x.idCart as CartModel);
                                           }),
                                     ],
                                   ),
