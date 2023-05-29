@@ -13,6 +13,10 @@ import 'package:med_app/widget/card_product.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:med_app/pages/detail_doctor.dart';
+import 'package:med_app/network/model/doctor_model.dart';
+import 'package:med_app/widget/button_primary.dart';
+import 'package:med_app/pages/prescription_page.dart';
+//import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePages extends StatefulWidget {
   @override
@@ -37,6 +41,22 @@ class _HomePagesState extends State<HomePages> {
       });
       getProduct();
       totalCart();
+    }
+  }
+
+  List<DoctorModel> listDoctor = [];
+  getDoctor() async {
+    listDoctor.clear();
+    var urlDoctor = Uri.parse(BASEURL.getDoctor);
+    final response = await http.get(urlDoctor);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      for (Map doctor in data) {
+        listDoctor.add(DoctorModel.fromJson(doctor));
+      }
+      setState(() {
+        // Cập nhật danh sách bác sĩ và giao diện
+      });
     }
   }
 
@@ -82,6 +102,7 @@ class _HomePagesState extends State<HomePages> {
     super.initState();
     getPref();
     getCategory();
+    getDoctor();
   }
 
   @override
@@ -180,56 +201,84 @@ class _HomePagesState extends State<HomePages> {
           height: 32,
         ),
         Text(
-          "Các bác sĩ tư vấn",
+          "Liên hệ các bác sĩ tư vấn",
           style: regulerTextStyle.copyWith(fontSize: 16),
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              for (var i = 1; i <= 5; i++)
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DetailDoctor()),
-                    );
-                  },
-                  child: Container(
-                    width: 100,
-                    height: 150,
-                    margin: EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: i % 2 == 0 ? Colors.green : Colors.red,
-                            image: DecorationImage(
-                              image: AssetImage('assets/Johnny Sins.jpg'),
+        Container(
+          height: 170,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(
+                listDoctor.length,
+                (index) {
+                  final doctor = listDoctor[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailDoctor(doctor: doctor),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 150,
+                      margin: EdgeInsets.all(10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              color: index % 2 == 0 ? Colors.green : Colors.red,
+                            ),
+                            child: Image.network(
+                              doctor.avatar.toString(),
                               fit: BoxFit.cover,
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          'BS.Tiến',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                      ],
+                          Text(
+                            'BS. ' + doctor.hoten!,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-            ],
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 32,
+        ),
+        Text(
+          "Đặt thuốc theo đơn của bác sĩ",
+          style: regulerTextStyle.copyWith(fontSize: 16),
+        ),
+        SizedBox(
+          height: 16,
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          child: ButtonPrimary(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => PrescriptionPages()));
+            },
+            text: "Xem và đặt mua thuốc theo đơn",
           ),
         ),
         SizedBox(
@@ -243,33 +292,43 @@ class _HomePagesState extends State<HomePages> {
           height: 14,
         ),
         GridView.builder(
-            physics: ClampingScrollPhysics(),
-            itemCount: listCategory.length,
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4, mainAxisSpacing: 10),
-            itemBuilder: (context, i) {
-              final x = listCategory[i];
-              return InkWell(
-                onTap: () {
-                  setState(() {
-                    index = i;
-                    filter = true;
-                    print("$index, $filter");
-                  });
-                },
-                child: CardCategory(
-                  imageCategory: x.image,
-                  nameCategory: x.category,
-                ),
-              );
-            }),
+          physics: ClampingScrollPhysics(),
+          itemCount: listCategory.length > 8 ? 8 : listCategory.length,
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            mainAxisSpacing: 10,
+          ),
+          itemBuilder: (context, i) {
+            final x = listCategory[i];
+            return InkWell(
+              onTap: () {
+                setState(() {
+                  index = i;
+                  filter = true;
+                  print("$index, $filter");
+                });
+              },
+              child: CardCategory(
+                imageCategory: x.image,
+                nameCategory: x.category,
+              ),
+            );
+          },
+        ),
         SizedBox(
           height: 32,
         ),
+        Text(
+          "Sản Phẩm",
+          style: regulerTextStyle.copyWith(fontSize: 16),
+        ),
+        SizedBox(
+          height: 16,
+        ),
         filter
             ? index == 8
-                ? Text("Feature on proggress")
+                ? Text("Feature in proggress")
                 : GridView.builder(
                     physics: ClampingScrollPhysics(),
                     itemCount: listCategory[index!].product!.length,

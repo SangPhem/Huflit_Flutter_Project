@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:med_app/widget/button_primary.dart';
+import 'package:med_app/network/model/doctor_model.dart';
 
 class DetailDoctor extends StatefulWidget {
+  final DoctorModel doctor; // Thêm thuộc tính doctor
+
+  DetailDoctor({required this.doctor}); // Thêm constructor
+
   @override
   _DetailDoctorState createState() => _DetailDoctorState();
 }
@@ -30,6 +35,8 @@ class _DetailDoctorState extends State<DetailDoctor> {
 
   @override
   Widget build(BuildContext context) {
+    final doctor = widget.doctor; // Lấy thông tin bác sĩ từ thuộc tính widget
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Thông tin bác sĩ tư vấn'),
@@ -41,37 +48,35 @@ class _DetailDoctorState extends State<DetailDoctor> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/Johnny Sins.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+                height: 300,
+                child: Image.network(
+                  doctor.avatar.toString(),
+                  fit: BoxFit.cover,
                 ),
               ),
               SizedBox(height: 20),
               Text(
-                'Họ tên: Nguyễn Quốc Tiến',
+                'Họ tên: ${doctor.hoten}',
                 style: TextStyle(fontSize: 18),
               ),
               SizedBox(height: 10),
               Text(
-                'Chuyên ngành: Bác sĩ nội khoa',
+                'Chuyên ngành: ${doctor.chuyennganh}',
                 style: TextStyle(fontSize: 18),
               ),
               SizedBox(height: 10),
               Text(
-                'Ngày tháng năm sinh: 02/01/2001',
+                'Ngày tháng năm sinh: ${doctor.ngaysinh}',
                 style: TextStyle(fontSize: 18),
               ),
               SizedBox(height: 10),
               Text(
-                'Tuổi nghề: 10 năm',
+                'Tuổi nghề: ${doctor.tuoinghe} năm',
                 style: TextStyle(fontSize: 18),
               ),
               SizedBox(height: 10),
               Text(
-                'Bệnh viện trực thuộc: BV Chợ Rẫy',
+                'Bệnh viện trực thuộc: ${doctor.benhvien}',
                 style: TextStyle(fontSize: 18),
               ),
               SizedBox(height: 20),
