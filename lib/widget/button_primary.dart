@@ -6,6 +6,7 @@ class ButtonPrimary extends StatelessWidget {
   final VoidCallback onTap;
 
   ButtonPrimary({required this.text, required this.onTap});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,9 +16,11 @@ class ButtonPrimary extends StatelessWidget {
         onPressed: onTap,
         child: Text(text),
         style: ElevatedButton.styleFrom(
-            backgroundColor: greenColor,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20))),
+          backgroundColor: greenColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
       ),
     );
   }

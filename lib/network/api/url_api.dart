@@ -22,4 +22,8 @@ class BASEURL {
       "http://$ipAddress/med_app_db/get_doctor.php?id_user=";
   static String getProductPrescription =
       "http://$ipAddress/med_app_db/get_product_prescription.php?id_user=";
+  static String booking =
+      "http://$ipAddress/med_app_db/booking_api.php?id_user=";
+  static String getbooking =
+      "http://$ipAddress/med_app_db/get_booked_schedule.php?id_user=";
 }

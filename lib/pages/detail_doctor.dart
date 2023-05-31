@@ -1,11 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:med_app/network/model/pref_profile_model.dart';
 import 'package:med_app/widget/button_primary.dart';
 import 'package:med_app/network/model/doctor_model.dart';
+import 'package:med_app/network/api/url_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:med_app/network/model/booked_schedule_model.dart';
+
+import 'package:http/http.dart' as http;
 
 class DetailDoctor extends StatefulWidget {
-  final DoctorModel doctor; // Thêm thuộc tính doctor
+  final DoctorModel doctor;
 
-  DetailDoctor({required this.doctor}); // Thêm constructor
+  DetailDoctor({required this.doctor});
 
   @override
   _DetailDoctorState createState() => _DetailDoctorState();
@@ -14,6 +23,109 @@ class DetailDoctor extends StatefulWidget {
 class _DetailDoctorState extends State<DetailDoctor> {
   String _selectedDate = 'Chọn ngày';
   String _selectedTime = 'Chọn giờ';
+
+  // Khai báo danh sách lịch hẹn
+  List<BookedScheduleModel> bookedSchedules = [];
+
+  Future<void> _fetchBookedSchedules() async {
+    final DoctorModel doctor = widget.doctor;
+    var doctorId = doctor.idDoctor;
+    var url = Uri.parse(BASEURL.getbooking);
+    var response = await http.post(
+      url,
+      body: {'doctor_id': doctorId},
+    );
+
+    if (response.statusCode == 200) {
+      // Chuyển đổi dữ liệu từ JSON sang List<BookedScheduleModel>
+      List<dynamic> jsonData = json.decode(response.body);
+      bookedSchedules =
+          jsonData.map((item) => BookedScheduleModel.fromJson(item)).toList();
+      setState(() {});
+    } else {
+      // Xử lý khi lấy dữ liệu không thành công
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Thông báo'),
+            content: Text('Lịch hiển thị đang bị lỗi.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Gọi hàm lấy danh sách lịch hẹn khi màn hình được khởi tạo
+    _fetchBookedSchedules();
+  }
+
+  Widget _buildBookedScheduleList() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(height: 20),
+        Text(
+          'Lịch đặt của bác sĩ',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 10),
+        GridView.builder(
+          shrinkWrap: true,
+          itemCount: bookedSchedules.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 7,
+            mainAxisSpacing: 8.0,
+            crossAxisSpacing: 8.0,
+          ),
+          itemBuilder: (context, index) {
+            BookedScheduleModel schedule = bookedSchedules[index];
+            bool isBooked =
+                true; // Kiểm tra xem ngày đã được đặt hay chưa, bạn cần thay đổi logic này dựa trên dữ liệu thực tế
+            return Container(
+              decoration: BoxDecoration(
+                color: isBooked ? Colors.red : Colors.transparent,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${schedule.bookedDate.day}/${schedule.bookedDate.month}',
+                    style: TextStyle(
+                      color: isBooked ? Colors.white : Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    '${schedule.bookedDate.year}',
+                    style: TextStyle(
+                      color: isBooked ? Colors.white : Colors.black,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
 
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -33,9 +145,106 @@ class _DetailDoctorState extends State<DetailDoctor> {
     if (picked != null) setState(() => _selectedTime = picked.format(context));
   }
 
+  Future<String?> getUserId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.getString(PrefProfile.idUSer);
+  }
+
+  void _confirmBooking() async {
+    String? userId = await getUserId();
+    final DoctorModel doctor = widget.doctor;
+
+    // Kiểm tra xem ngày đã được đặt với bác sĩ hay chưa
+    bool isDateBooked = bookedSchedules.any((schedule) =>
+        schedule.doctorId == doctor.idDoctor &&
+        schedule.bookedDate.toString() == _selectedDate);
+
+    if (isDateBooked) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Thông báo'),
+            content: Text('Ngày đã được đặt, vui lòng chọn ngày khác.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return; // Dừng quá trình đặt lịch nếu ngày đã được đặt
+    }
+
+    // Gửi yêu cầu đặt lịch hẹn
+    var urlBooking = Uri.parse(BASEURL.booking);
+    final response = await http.post(
+      urlBooking,
+      body: {
+        'user_id': userId.toString(), // Sử dụng userId từ SharedPreferences
+        'doctor_id': doctor.idDoctor.toString(),
+        'booked_date': _selectedDate.toString(),
+        'booked_time': _selectedTime.toString(),
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Xử lý phản hồi thành công
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Thông báo'),
+            content: Text('Đặt lịch thành công.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Xử lý phản hồi lỗi
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Thông báo'),
+            content: Text('Đặt lịch thất bại.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+    print('Booking confirmation button pressed');
+
+    // In các giá trị của các biến được sử dụng trong phương thức này
+    print('user: $userId');
+    print('doctor: $doctor');
+    print('date: $_selectedDate');
+    print('time: $_selectedTime');
+
+    // Gọi API và xử lý kết quả
+    print('Calling API to confirm booking...');
+
+    // Xử lý kết quả trả về từ API
+
+    // In kết quả
+    print('Booking confirmed!');
+  }
+
   @override
   Widget build(BuildContext context) {
-    final doctor = widget.doctor; // Lấy thông tin bác sĩ từ thuộc tính widget
+    final doctor = widget.doctor;
 
     return Scaffold(
       appBar: AppBar(
@@ -50,52 +259,80 @@ class _DetailDoctorState extends State<DetailDoctor> {
               Container(
                 height: 300,
                 child: Image.network(
-                  doctor.avatar.toString(),
+                  doctor.avatar!,
                   fit: BoxFit.cover,
                 ),
               ),
               SizedBox(height: 20),
               Text(
-                'Họ tên: ${doctor.hoten}',
-                style: TextStyle(fontSize: 18),
+                doctor.hoten!,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               SizedBox(height: 10),
               Text(
-                'Chuyên ngành: ${doctor.chuyennganh}',
-                style: TextStyle(fontSize: 18),
+                doctor.chuyennganh!,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               Text(
-                'Ngày tháng năm sinh: ${doctor.ngaysinh}',
-                style: TextStyle(fontSize: 18),
+                'Ngày sinh: ${doctor.ngaysinh}',
+                style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 10),
               Text(
                 'Tuổi nghề: ${doctor.tuoinghe} năm',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 16),
+              ),
+              Text(
+                'Bệnh viện: ${doctor.benhvien}',
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 10),
+              Text.rich(
+                TextSpan(
+                  text: 'Số điện thoại: ',
+                  style: TextStyle(fontSize: 16),
+                  children: [
+                    TextSpan(
+                      text: doctor.sdt,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              _buildBookedScheduleList(),
+              SizedBox(height: 20),
+              Text(
+                'Chọn ngày:',
+                style: TextStyle(fontSize: 16),
+              ),
+              TextButton(
+                onPressed: () => _selectDate(context),
+                child: Text(_selectedDate),
               ),
               SizedBox(height: 10),
               Text(
-                'Bệnh viện trực thuộc: ${doctor.benhvien}',
-                style: TextStyle(fontSize: 18),
+                'Chọn giờ:',
+                style: TextStyle(fontSize: 16),
+              ),
+              TextButton(
+                onPressed: () => _selectTime(context),
+                child: Text(_selectedTime),
               ),
               SizedBox(height: 20),
-              ListTile(
-                leading: Icon(Icons.calendar_today),
-                title: Text('Ngày hẹn'),
-                subtitle: Text(_selectedDate),
-                onTap: () => _selectDate(context),
-              ),
-              ListTile(
-                leading: Icon(Icons.access_time),
-                title: Text('Giờ hẹn'),
-                subtitle: Text(_selectedTime),
-                onTap: () => _selectTime(context),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {},
-                child: Text('Xác nhận đặt lịch hẹn'),
+              ButtonPrimary(
+                text: 'Xác nhận đặt lịch hẹn',
+                onTap: _confirmBooking,
               ),
             ],
           ),
