@@ -21,9 +21,10 @@ class DetailDoctor extends StatefulWidget {
 }
 
 class _DetailDoctorState extends State<DetailDoctor> {
-  String _selectedDate = 'Chọn ngày';
-  String _selectedTime = 'Chọn giờ';
+  String? _selectedDate; // Ban đầu giá trị là null
+  String? _selectedTime; // Ban đầu giá trị là null
 
+  bool isBookingSuccess = false;
   // Khai báo danh sách lịch hẹn
   List<BookedScheduleModel> bookedSchedules = [];
 
@@ -75,7 +76,7 @@ class _DetailDoctorState extends State<DetailDoctor> {
       children: [
         SizedBox(height: 20),
         Text(
-          'Lịch đặt của bác sĩ',
+          'Lịch đặt của bạn với bác sĩ',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -134,7 +135,11 @@ class _DetailDoctorState extends State<DetailDoctor> {
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
-    if (picked != null) setState(() => _selectedDate = picked.toString());
+    if (picked != null) {
+      setState(() {
+        _selectedDate = picked.toString();
+      });
+    }
   }
 
   void _selectTime(BuildContext context) async {
@@ -142,7 +147,11 @@ class _DetailDoctorState extends State<DetailDoctor> {
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    if (picked != null) setState(() => _selectedTime = picked.format(context));
+    if (picked != null) {
+      setState(() {
+        _selectedTime = picked.format(context);
+      });
+    }
   }
 
   Future<String?> getUserId() async {
@@ -153,6 +162,25 @@ class _DetailDoctorState extends State<DetailDoctor> {
   void _confirmBooking() async {
     String? userId = await getUserId();
     final DoctorModel doctor = widget.doctor;
+
+    if (_selectedDate == null || _selectedTime == null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Thông báo'),
+            content: Text('Vui lòng chọn ngày và giờ muốn đặt với bác sĩ.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return; // Dừng quá trình đặt lịch nếu ngày hoặc giờ chưa được chọn
+    }
 
     // Kiểm tra xem ngày đã được đặt với bác sĩ hay chưa
     bool isDateBooked = bookedSchedules.any((schedule) =>
@@ -191,7 +219,6 @@ class _DetailDoctorState extends State<DetailDoctor> {
     );
 
     if (response.statusCode == 200) {
-      // Xử lý phản hồi thành công
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -200,7 +227,27 @@ class _DetailDoctorState extends State<DetailDoctor> {
             content: Text('Đặt lịch thành công.'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    isBookingSuccess = true;
+                  });
+                  // Refresh lại danh sách lịch đặt
+                  _fetchBookedSchedules();
+
+                  // Refresh lại ngày và giờ đã chọn
+                  setState(() {
+                    _selectedDate = null;
+                    _selectedTime = null;
+                  });
+
+                  // Refresh lại giao diện sau 2 giây
+                  Future.delayed(Duration(seconds: 2), () {
+                    setState(() {
+                      isBookingSuccess = false;
+                    });
+                  });
+                },
                 child: Text('OK'),
               ),
             ],
@@ -208,13 +255,13 @@ class _DetailDoctorState extends State<DetailDoctor> {
         },
       );
     } else {
-      // Xử lý phản hồi lỗi
+      // Xử lý khi đặt lịch không thành công
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Thông báo'),
-            content: Text('Đặt lịch thất bại.'),
+            content: Text('Đặt lịch không thành công. Vui lòng thử lại sau.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -225,21 +272,6 @@ class _DetailDoctorState extends State<DetailDoctor> {
         },
       );
     }
-    print('Booking confirmation button pressed');
-
-    // In các giá trị của các biến được sử dụng trong phương thức này
-    print('user: $userId');
-    print('doctor: $doctor');
-    print('date: $_selectedDate');
-    print('time: $_selectedTime');
-
-    // Gọi API và xử lý kết quả
-    print('Calling API to confirm booking...');
-
-    // Xử lý kết quả trả về từ API
-
-    // In kết quả
-    print('Booking confirmed!');
   }
 
   @override
@@ -318,7 +350,7 @@ class _DetailDoctorState extends State<DetailDoctor> {
               ),
               TextButton(
                 onPressed: () => _selectDate(context),
-                child: Text(_selectedDate),
+                child: Text(_selectedDate ?? 'Chọn ngày'),
               ),
               SizedBox(height: 10),
               Text(
@@ -327,7 +359,7 @@ class _DetailDoctorState extends State<DetailDoctor> {
               ),
               TextButton(
                 onPressed: () => _selectTime(context),
-                child: Text(_selectedTime),
+                child: Text(_selectedTime ?? 'Chọn giờ'),
               ),
               SizedBox(height: 20),
               ButtonPrimary(
